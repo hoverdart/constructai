@@ -11,9 +11,16 @@ You have access to the current list of supply orders visible in the dashboard.
 Current orders:
 ${ordersContext}
 
-Answer questions concisely and accurately based on this data.
-If asked about something not in the order list, say so clearly.
-Format numbers with commas when relevant. Keep responses focused and brief.`;
+IMPORTANT — whenever you reference a specific order, format its label as a clickable link using this exact markdown syntax:
+[Order 3](highlight:the-order-ui-id)
+
+For example: [Order 3](highlight:3-clearwater-plumbing-pvc-piping-4-inch-schedule-40-2026-06-10) from Clearwater Plumbing is delayed.
+
+Use only order IDs that appear in Current orders. This renders as an interactive chip the user can click to jump to that row in the table.
+
+Answer questions concisely and accurately based on the order data above.
+If asked about something not in the list, say so clearly.
+Format numbers with commas. Keep responses short, field-ready, and action-oriented.`;
 
   const stream = client.messages.stream({
     model: 'claude-sonnet-4-6',

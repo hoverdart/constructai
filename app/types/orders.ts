@@ -9,6 +9,11 @@ export interface Order {
   status: OrderStatus;
 }
 
+export interface OrderWithUiId extends Order {
+  uiId: string;
+  displayIndex: number;
+}
+
 export interface FilterState {
   status: OrderStatus | 'All';
   supplier: string;
@@ -23,6 +28,7 @@ export interface OrderInsight {
   summary: string;
   action: string;
   severity: InsightSeverity;
+  targetOrderIds: string[];
   supplier?: string | null;
   dueDate?: string | null;
 }

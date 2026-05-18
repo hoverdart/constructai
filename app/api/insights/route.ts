@@ -1,4 +1,4 @@
-import type { Order, OrderInsight } from '@/app/types/orders';
+import type { OrderInsight, OrderWithUiId } from '@/app/types/orders';
 
 export const runtime = 'nodejs';
 
@@ -11,11 +11,13 @@ interface InsightsResponse {
 }
 
 export async function POST(request: Request) {
-  let orders: Order[] = [];
+  let orders: OrderWithUiId[] = [];
 
   try {
     const body = await request.json();
-    orders = Array.isArray(body.orders) ? body.orders.slice(0, MAX_ORDERS) : [];
+    orders = Array.isArray(body.orders)
+      ? body.orders.filter(isOrderWithUiId).slice(0, MAX_ORDERS)
+      : [];
   } catch {
     return Response.json({ error: 'Invalid JSON request body.' }, { status: 400 });
   }
@@ -48,13 +50,15 @@ Prioritize:
 - Orders due soon or overdue but still "Pending Confirmation".
 - Delayed orders with near-term due dates.
 - Large quantities that may create site, storage, or crew coordination risk.
-- Supplier concentration or repeated risk patterns.
+- The next delivery that needs crew, unloading, or laydown preparation.
 
 Rules:
 - Return only insights that are useful without the user asking.
 - Keep summaries specific and grounded in the supplied orders.
 - Use no more than 4 insights.
-- Include a concrete next action for each insight.`,
+- Include a concrete next action for each insight.
+- Every order-specific insight must include targetOrderIds using only the supplied order uiId values.
+- If an insight is general and cannot map to a row, return an empty targetOrderIds array.`,
       input: [
         {
           role: 'user',
@@ -88,6 +92,7 @@ Rules:
                     'summary',
                     'action',
                     'severity',
+                    'targetOrderIds',
                     'supplier',
                     'dueDate',
                   ],
@@ -102,6 +107,15 @@ Rules:
                     severity: {
                       type: 'string',
                       enum: ['info', 'warning', 'critical'],
+                    },
+                    targetOrderIds: {
+                      type: 'array',
+                      items: {
+                        type: 'string',
+                        enum: orders.map((order) => order.uiId),
+                      },
+                      description:
+                        'Visible order uiId values that this insight references. Empty for general insights.',
                     },
                     supplier: {
                       type: ['string', 'null'],
@@ -183,8 +197,27 @@ function isOrderInsight(value: unknown): value is OrderInsight {
     typeof insight.title === 'string' &&
     typeof insight.summary === 'string' &&
     typeof insight.action === 'string' &&
+    Array.isArray(insight.targetOrderIds) &&
     (insight.severity === 'info' ||
       insight.severity === 'warning' ||
       insight.severity === 'critical')
+  );
+}
+
+function isOrderWithUiId(value: unknown): value is OrderWithUiId {
+  if (!value || typeof value !== 'object') return false;
+
+  const order = value as Partial<OrderWithUiId>;
+  return (
+    typeof order.uiId === 'string' &&
+    typeof order.displayIndex === 'number' &&
+    typeof order.supplier === 'string' &&
+    typeof order.item_description === 'string' &&
+    typeof order.quantity === 'number' &&
+    typeof order.unit === 'string' &&
+    typeof order.expected_delivery_date === 'string' &&
+    (order.status === 'On Track' ||
+      order.status === 'Pending Confirmation' ||
+      order.status === 'Delayed')
   );
 }
