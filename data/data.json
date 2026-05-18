@@ -1,0 +1,82 @@
+[
+	{
+		"supplier": "Acme Steel Co.",
+		"item_description": "Galvanized steel beams - I-beam 200mm",
+		"quantity": 120,
+		"unit": "pieces",
+		"expected_delivery_date": "2026-06-15",
+		"status": "On Track"
+	},
+	{
+		"supplier": "Greenfield Lumber",
+		"item_description": "Pressure-treated timber planks 2x6",
+		"quantity": 500,
+		"unit": "boards",
+		"expected_delivery_date": "2026-06-20",
+		"status": "Pending Confirmation"
+	},
+	{
+		"supplier": "Clearwater Plumbing",
+		"item_description": "PVC piping 4-inch, schedule 40",
+		"quantity": 200,
+		"unit": "meters",
+		"expected_delivery_date": "2026-06-10",
+		"status": "Delayed"
+	},
+	{
+		"supplier": "Bright Electrical",
+		"item_description": "Copper electrical wire 2.5mm",
+		"quantity": 1000,
+		"unit": "meters",
+		"expected_delivery_date": "2026-06-12",
+		"status": "On Track"
+	},
+	{
+		"supplier": "Hardscape Supplies Ltd.",
+		"item_description": "Concrete pavers - 300x300mm",
+		"quantity": 2400,
+		"unit": "pieces",
+		"expected_delivery_date": "2026-07-01",
+		"status": "Pending Confirmation"
+	},
+	{
+		"supplier": "Solaris Glassworks",
+		"item_description": "Tempered glass panels 10mm",
+		"quantity": 75,
+		"unit": "panels",
+		"expected_delivery_date": "2026-06-25",
+		"status": "On Track"
+	},
+	{
+		"supplier": "Atlas Fasteners",
+		"item_description": "Stainless steel bolts M12 x 100mm",
+		"quantity": 2000,
+		"unit": "pieces",
+		"expected_delivery_date": "2026-06-08",
+		"status": "Delayed"
+	},
+	{
+		"supplier": "Prime Paints",
+		"item_description": "Exterior acrylic paint, 20L",
+		"quantity": 60,
+		"unit": "cans",
+		"expected_delivery_date": "2026-06-18",
+		"status": "On Track"
+	},
+	{
+		"supplier": "EcoInsulation",
+		"item_description": "Fiberglass insulation rolls R-13",
+		"quantity": 180,
+		"unit": "rolls",
+		"expected_delivery_date": "2026-06-22",
+		"status": "Pending Confirmation"
+	},
+	{
+		"supplier": "Urban Fixtures",
+		"item_description": "Commercial LED light fixtures 40W",
+		"quantity": 320,
+		"unit": "units",
+		"expected_delivery_date": "2026-06-14",
+		"status": "On Track"
+	}
+]
