@@ -1,13 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import type { OrderInsight, InsightSeverity } from '@/app/types/orders';
+import type { InsightSeverity, OrderInsight } from '@/app/types/orders';
 
-interface InsightPopupsProps {
+interface InsightsPanelProps {
   insights: OrderInsight[];
   isOpen: boolean;
   loading: boolean;
-  onDismissInsight: (insight: OrderInsight) => void;
   onSelectInsight: (insight: OrderInsight) => void;
 }
 
@@ -23,25 +21,12 @@ const severityDots: Record<InsightSeverity, string> = {
   critical: 'bg-red-500',
 };
 
-export default function InsightPopups({
+export default function InsightsPanel({
   insights,
   isOpen,
   loading,
-  onDismissInsight,
   onSelectInsight,
-}: InsightPopupsProps) {
-  const [dismissedState, setDismissedState] = useState<{
-    ids: Set<string>;
-    signature: string;
-  }>(() => ({ ids: new Set(), signature: '' }));
-  const insightSignature = useMemo(
-    () => insights.map((insight) => insight.id).join('::'),
-    [insights],
-  );
-  const dismissed =
-    dismissedState.signature === insightSignature ? dismissedState.ids : new Set<string>();
-  const visibleInsights = insights.filter((insight) => !dismissed.has(insight.id));
-
+}: InsightsPanelProps) {
   return (
     <div
       className={`overflow-hidden transition-all duration-500 ease-out ${
@@ -57,45 +42,25 @@ export default function InsightPopups({
             </p>
           </div>
           <span className="rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-600">
-            {loading ? 'Scanning' : `${visibleInsights.length} active`}
+            {loading ? 'Scanning' : `${insights.length} active`}
           </span>
         </div>
 
         <div className="max-h-[380px] overflow-y-auto p-3">
-          {loading && visibleInsights.length === 0 ? (
-            <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
-              {[0, 1, 2].map((item) => (
-                <div
-                  key={item}
-                  className="h-28 animate-pulse rounded-lg border border-zinc-100 bg-zinc-50"
-                />
-              ))}
-            </div>
-          ) : null}
+          {loading && insights.length === 0 ? <InsightsSkeleton /> : null}
 
-          {!loading && visibleInsights.length === 0 ? (
+          {!loading && insights.length === 0 ? (
             <div className="rounded-lg border border-dashed border-zinc-200 px-4 py-8 text-center text-sm text-zinc-500">
               No active insights for the visible orders.
             </div>
           ) : null}
 
-          {visibleInsights.length > 0 ? (
+          {insights.length > 0 ? (
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-              {visibleInsights.map((insight) => (
+              {insights.map((insight) => (
                 <InsightCard
                   insight={insight}
                   key={insight.id}
-                  onDismiss={(dismissedInsight) => {
-                    setDismissedState((current) => {
-                      const ids =
-                        current.signature === insightSignature
-                          ? new Set(current.ids)
-                          : new Set<string>();
-                      ids.add(dismissedInsight.id);
-                      return { ids, signature: insightSignature };
-                    });
-                    onDismissInsight(dismissedInsight);
-                  }}
                   onSelect={onSelectInsight}
                 />
               ))}
@@ -107,32 +72,35 @@ export default function InsightPopups({
   );
 }
 
-function InsightCard({
+export function InsightCard({
   insight,
-  onDismiss,
   onSelect,
+  compact = false,
 }: {
   insight: OrderInsight;
-  onDismiss: (insight: OrderInsight) => void;
-  onSelect: (insight: OrderInsight) => void;
+  onSelect?: (insight: OrderInsight) => void;
+  compact?: boolean;
 }) {
   const hasTarget = insight.targetOrderIds.length > 0;
+  const clickable = hasTarget && Boolean(onSelect);
 
   return (
     <div
-      role={hasTarget ? 'button' : undefined}
-      tabIndex={hasTarget ? 0 : undefined}
+      role={clickable ? 'button' : undefined}
+      tabIndex={clickable ? 0 : undefined}
       onClick={() => {
-        if (hasTarget) onSelect(insight);
+        if (clickable) onSelect?.(insight);
       }}
       onKeyDown={(event) => {
-        if (hasTarget && (event.key === 'Enter' || event.key === ' ')) {
+        if (clickable && (event.key === 'Enter' || event.key === ' ')) {
           event.preventDefault();
-          onSelect(insight);
+          onSelect?.(insight);
         }
       }}
-      className={`rounded-lg border p-3 text-left transition-all duration-300 ${
-        hasTarget
+      className={`rounded-lg border text-left transition-all duration-300 ${
+        compact ? 'p-2.5' : 'p-3'
+      } ${
+        clickable
           ? 'cursor-pointer hover:-translate-y-0.5 hover:shadow-md'
           : 'cursor-default'
       } ${severityStyles[insight.severity]}`}
@@ -142,32 +110,7 @@ function InsightCard({
           className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${severityDots[insight.severity]}`}
         />
         <div className="min-w-0 flex-1">
-          <div className="flex items-start justify-between gap-3">
-            <p className="text-sm font-semibold">{insight.title}</p>
-            <button
-              type="button"
-              aria-label={`Dismiss ${insight.title}`}
-              onClick={(event) => {
-                event.stopPropagation();
-                onDismiss(insight);
-              }}
-              className="shrink-0 rounded p-0.5 text-current opacity-55 transition hover:bg-black/5 hover:opacity-100"
-            >
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
+          <p className="text-sm font-semibold">{insight.title}</p>
           <p className="mt-1 text-xs leading-relaxed opacity-80">
             {insight.summary}
           </p>
@@ -175,7 +118,7 @@ function InsightCard({
           <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] opacity-65">
             {insight.supplier ? <span>{insight.supplier}</span> : null}
             {insight.dueDate ? <span>{formatDate(insight.dueDate)}</span> : null}
-            {hasTarget ? (
+            {clickable ? (
               <span className="font-medium text-current underline underline-offset-2">
                 View order
               </span>
@@ -183,6 +126,19 @@ function InsightCard({
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function InsightsSkeleton() {
+  return (
+    <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+      {[0, 1, 2].map((item) => (
+        <div
+          key={item}
+          className="h-28 animate-pulse rounded-lg border border-zinc-100 bg-zinc-50"
+        />
+      ))}
     </div>
   );
 }

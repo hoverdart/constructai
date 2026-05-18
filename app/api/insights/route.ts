@@ -5,6 +5,7 @@ export const runtime = 'nodejs';
 const OPENAI_RESPONSES_URL = 'https://api.openai.com/v1/responses';
 const DEFAULT_MODEL = 'gpt-5.4-mini';
 const MAX_ORDERS = 80;
+const MAX_INSIGHTS = 12;
 
 interface InsightsResponse {
   insights: OrderInsight[];
@@ -55,7 +56,7 @@ Prioritize:
 Rules:
 - Return only insights that are useful without the user asking.
 - Keep summaries specific and grounded in the supplied orders.
-- Use no more than 4 insights.
+- Return all useful insights, up to ${MAX_INSIGHTS}.
 - Include a concrete next action for each insight.
 - Every order-specific insight must include targetOrderIds using only the supplied order uiId values.
 - If an insight is general and cannot map to a row, return an empty targetOrderIds array.`,
@@ -82,7 +83,7 @@ Rules:
             properties: {
               insights: {
                 type: 'array',
-                maxItems: 4,
+                maxItems: MAX_INSIGHTS,
                 items: {
                   type: 'object',
                   additionalProperties: false,
@@ -157,7 +158,7 @@ function parseInsights(response: unknown): InsightsResponse {
     const parsed = JSON.parse(text) as InsightsResponse;
     return {
       insights: Array.isArray(parsed.insights)
-        ? parsed.insights.filter(isOrderInsight).slice(0, 4)
+        ? parsed.insights.filter(isOrderInsight).slice(0, MAX_INSIGHTS)
         : [],
     };
   } catch {

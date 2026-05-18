@@ -1,82 +1,242 @@
 [
-	{
-		"supplier": "Acme Steel Co.",
-		"item_description": "Galvanized steel beams - I-beam 200mm",
-		"quantity": 120,
-		"unit": "pieces",
-		"expected_delivery_date": "2026-06-15",
-		"status": "On Track"
-	},
-	{
-		"supplier": "Greenfield Lumber",
-		"item_description": "Pressure-treated timber planks 2x6",
-		"quantity": 500,
-		"unit": "boards",
-		"expected_delivery_date": "2026-06-20",
-		"status": "Pending Confirmation"
-	},
-	{
-		"supplier": "Clearwater Plumbing",
-		"item_description": "PVC piping 4-inch, schedule 40",
-		"quantity": 200,
-		"unit": "meters",
-		"expected_delivery_date": "2026-06-10",
-		"status": "Delayed"
-	},
-	{
-		"supplier": "Bright Electrical",
-		"item_description": "Copper electrical wire 2.5mm",
-		"quantity": 1000,
-		"unit": "meters",
-		"expected_delivery_date": "2026-06-12",
-		"status": "On Track"
-	},
-	{
-		"supplier": "Hardscape Supplies Ltd.",
-		"item_description": "Concrete pavers - 300x300mm",
-		"quantity": 2400,
-		"unit": "pieces",
-		"expected_delivery_date": "2026-07-01",
-		"status": "Pending Confirmation"
-	},
-	{
-		"supplier": "Solaris Glassworks",
-		"item_description": "Tempered glass panels 10mm",
-		"quantity": 75,
-		"unit": "panels",
-		"expected_delivery_date": "2026-06-25",
-		"status": "On Track"
-	},
-	{
-		"supplier": "Atlas Fasteners",
-		"item_description": "Stainless steel bolts M12 x 100mm",
-		"quantity": 2000,
-		"unit": "pieces",
-		"expected_delivery_date": "2026-06-08",
-		"status": "Delayed"
-	},
-	{
-		"supplier": "Prime Paints",
-		"item_description": "Exterior acrylic paint, 20L",
-		"quantity": 60,
-		"unit": "cans",
-		"expected_delivery_date": "2026-06-18",
-		"status": "On Track"
-	},
-	{
-		"supplier": "EcoInsulation",
-		"item_description": "Fiberglass insulation rolls R-13",
-		"quantity": 180,
-		"unit": "rolls",
-		"expected_delivery_date": "2026-06-22",
-		"status": "Pending Confirmation"
-	},
-	{
-		"supplier": "Urban Fixtures",
-		"item_description": "Commercial LED light fixtures 40W",
-		"quantity": 320,
-		"unit": "units",
-		"expected_delivery_date": "2026-06-14",
-		"status": "On Track"
-	}
+  {
+    "supplier": "Acme Steel Co.",
+    "item_description": "Galvanized steel beams - I-beam 200mm",
+    "quantity": 120,
+    "unit": "pieces",
+    "expected_delivery_date": "2026-06-15",
+    "status": "On Track"
+  },
+  {
+    "supplier": "Greenfield Lumber",
+    "item_description": "Pressure-treated timber planks 2x6",
+    "quantity": 500,
+    "unit": "boards",
+    "expected_delivery_date": "2026-06-20",
+    "status": "Pending Confirmation"
+  },
+  {
+    "supplier": "Clearwater Plumbing",
+    "item_description": "PVC piping 4-inch, schedule 40",
+    "quantity": 200,
+    "unit": "meters",
+    "expected_delivery_date": "2026-06-10",
+    "status": "Delayed"
+  },
+  {
+    "supplier": "Bright Electrical",
+    "item_description": "Copper electrical wire 2.5mm",
+    "quantity": 1000,
+    "unit": "meters",
+    "expected_delivery_date": "2026-06-12",
+    "status": "On Track"
+  },
+  {
+    "supplier": "Hardscape Supplies Ltd.",
+    "item_description": "Concrete pavers - 300x300mm",
+    "quantity": 2400,
+    "unit": "pieces",
+    "expected_delivery_date": "2026-07-01",
+    "status": "Pending Confirmation"
+  },
+  {
+    "supplier": "Solaris Glassworks",
+    "item_description": "Tempered glass panels 10mm",
+    "quantity": 75,
+    "unit": "panels",
+    "expected_delivery_date": "2026-06-25",
+    "status": "On Track"
+  },
+  {
+    "supplier": "Atlas Fasteners",
+    "item_description": "Stainless steel bolts M12 x 100mm",
+    "quantity": 2000,
+    "unit": "pieces",
+    "expected_delivery_date": "2026-06-08",
+    "status": "Delayed"
+  },
+  {
+    "supplier": "Prime Paints",
+    "item_description": "Exterior acrylic paint, 20L",
+    "quantity": 60,
+    "unit": "cans",
+    "expected_delivery_date": "2026-06-18",
+    "status": "On Track"
+  },
+  {
+    "supplier": "EcoInsulation",
+    "item_description": "Fiberglass insulation rolls R-13",
+    "quantity": 180,
+    "unit": "rolls",
+    "expected_delivery_date": "2026-06-22",
+    "status": "Pending Confirmation"
+  },
+  {
+    "supplier": "Urban Fixtures",
+    "item_description": "Commercial LED light fixtures 40W",
+    "quantity": 320,
+    "unit": "units",
+    "expected_delivery_date": "2026-06-14",
+    "status": "On Track"
+  },
+  {
+    "supplier": "Metro Concrete",
+    "item_description": "Ready-mix concrete C35",
+    "quantity": 85,
+    "unit": "cubic meters",
+    "expected_delivery_date": "2026-06-11",
+    "status": "On Track"
+  },
+  {
+    "supplier": "Skyline Roofing",
+    "item_description": "Architectural asphalt shingles - charcoal",
+    "quantity": 140,
+    "unit": "bundles",
+    "expected_delivery_date": "2026-06-27",
+    "status": "Pending Confirmation"
+  },
+  {
+    "supplier": "Northern HVAC",
+    "item_description": "Industrial rooftop HVAC units 15-ton",
+    "quantity": 8,
+    "unit": "units",
+    "expected_delivery_date": "2026-07-08",
+    "status": "Delayed"
+  },
+  {
+    "supplier": "BluePeak Aggregates",
+    "item_description": "Crushed gravel 3/4-inch",
+    "quantity": 450,
+    "unit": "tons",
+    "expected_delivery_date": "2026-06-09",
+    "status": "On Track"
+  },
+  {
+    "supplier": "Titan Machinery Parts",
+    "item_description": "Hydraulic cylinders for excavators",
+    "quantity": 24,
+    "unit": "units",
+    "expected_delivery_date": "2026-06-30",
+    "status": "Pending Confirmation"
+  },
+  {
+    "supplier": "Evergreen Landscaping",
+    "item_description": "Decorative shrubs - boxwood 5 gallon",
+    "quantity": 180,
+    "unit": "plants",
+    "expected_delivery_date": "2026-06-19",
+    "status": "On Track"
+  },
+  {
+    "supplier": "Precision Metals",
+    "item_description": "Aluminum sheet panels 5mm",
+    "quantity": 320,
+    "unit": "sheets",
+    "expected_delivery_date": "2026-06-24",
+    "status": "Delayed"
+  },
+  {
+    "supplier": "Rapid Cement Solutions",
+    "item_description": "Portland cement type I",
+    "quantity": 900,
+    "unit": "bags",
+    "expected_delivery_date": "2026-06-13",
+    "status": "On Track"
+  },
+  {
+    "supplier": "Vertex Flooring",
+    "item_description": "Luxury vinyl tile flooring oak finish",
+    "quantity": 5400,
+    "unit": "square feet",
+    "expected_delivery_date": "2026-06-28",
+    "status": "Pending Confirmation"
+  },
+  {
+    "supplier": "Quantum Security Systems",
+    "item_description": "CCTV security cameras 4K outdoor",
+    "quantity": 48,
+    "unit": "units",
+    "expected_delivery_date": "2026-06-17",
+    "status": "On Track"
+  },
+  {
+    "supplier": "Harbor Industrial Supply",
+    "item_description": "Rebar steel rods #5 grade 60",
+    "quantity": 1400,
+    "unit": "pieces",
+    "expected_delivery_date": "2026-06-16",
+    "status": "Delayed"
+  },
+  {
+    "supplier": "Silverline Doors",
+    "item_description": "Commercial fire-rated steel doors",
+    "quantity": 26,
+    "unit": "doors",
+    "expected_delivery_date": "2026-07-03",
+    "status": "Pending Confirmation"
+  },
+  {
+    "supplier": "Pioneer Tools & Hardware",
+    "item_description": "Cordless impact drivers 20V",
+    "quantity": 40,
+    "unit": "units",
+    "expected_delivery_date": "2026-06-21",
+    "status": "On Track"
+  },
+  {
+    "supplier": "Terra Waterworks",
+    "item_description": "Underground drainage pipe 6-inch HDPE",
+    "quantity": 620,
+    "unit": "meters",
+    "expected_delivery_date": "2026-06-23",
+    "status": "On Track"
+  },
+  {
+    "supplier": "WestBay Windows",
+    "item_description": "Double-pane aluminum frame windows",
+    "quantity": 92,
+    "unit": "windows",
+    "expected_delivery_date": "2026-07-06",
+    "status": "Pending Confirmation"
+  },
+  {
+    "supplier": "Ironclad Scaffolding",
+    "item_description": "Modular scaffolding frames",
+    "quantity": 210,
+    "unit": "sets",
+    "expected_delivery_date": "2026-06-07",
+    "status": "Delayed"
+  },
+  {
+    "supplier": "FutureGrid Energy",
+    "item_description": "Solar inverter units 15kW",
+    "quantity": 14,
+    "unit": "units",
+    "expected_delivery_date": "2026-07-12",
+    "status": "On Track"
+  },
+  {
+    "supplier": "Crystal Coatings",
+    "item_description": "Industrial epoxy floor coating kits",
+    "quantity": 95,
+    "unit": "kits",
+    "expected_delivery_date": "2026-06-26",
+    "status": "Pending Confirmation"
+  },
+  {
+    "supplier": "Summit Safety Gear",
+    "item_description": "Construction safety helmets ANSI certified",
+    "quantity": 350,
+    "unit": "units",
+    "expected_delivery_date": "2026-06-05",
+    "status": "On Track"
+  },
+  {
+    "supplier": "Redwood Interiors",
+    "item_description": "Acoustic ceiling panels 600x600mm",
+    "quantity": 1800,
+    "unit": "panels",
+    "expected_delivery_date": "2026-06-29",
+    "status": "Delayed"
+  }
 ]

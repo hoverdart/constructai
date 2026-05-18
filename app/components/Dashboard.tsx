@@ -16,7 +16,7 @@ import FilterBar from './FilterBar';
 import OrdersTable from './OrdersTable';
 import StatCard from './StatCard';
 import AIAgent from './AIAgent';
-import InsightPopups from './InsightPopups';
+import InsightsPanel from './InsightsPanel';
 
 const DEFAULT_FILTERS: FilterState = {
   status: 'All',
@@ -57,6 +57,7 @@ export default function Dashboard({ orders }: DashboardProps) {
   ).length;
   const delayedCount = visibleOrders.filter((o) => o.status === 'Delayed').length;
 
+  // Keep proactive insight generation tied to the rows the user is actually viewing.
   useEffect(() => {
     const controller = new AbortController();
 
@@ -109,15 +110,17 @@ export default function Dashboard({ orders }: DashboardProps) {
       ? highlightedOrderId
       : null;
 
-  const selectOrder = useCallback((orderId: string) => {
+  const selectOrder = useCallback((orderId: string, shouldScroll = true) => {
     setSelectedOrderId(orderId);
     setHighlightedOrderId(orderId);
 
-    window.requestAnimationFrame(() => {
-      document
-        .getElementById(orderDomId(orderId))
-        ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
+    if (shouldScroll) {
+      window.requestAnimationFrame(() => {
+        document
+          .getElementById(orderDomId(orderId))
+          ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
 
     window.setTimeout(() => {
       setHighlightedOrderId((current) => (current === orderId ? null : current));
@@ -132,19 +135,18 @@ export default function Dashboard({ orders }: DashboardProps) {
     [selectOrder],
   );
 
-  const handleDismissInsight = useCallback(
-    (insight: OrderInsight) => {
-      if (selectedOrderId && insight.targetOrderIds.includes(selectedOrderId)) {
+  const handleSelectOrder = useCallback(
+    (orderId: string) => {
+      if (selectedOrderId === orderId) {
         setSelectedOrderId(null);
         setHighlightedOrderId(null);
+        return;
       }
-    },
-    [selectedOrderId],
-  );
 
-  const urgentInsightCount = insights.filter(
-    (insight) => insight.severity === 'critical' || insight.severity === 'warning',
-  ).length;
+      selectOrder(orderId, false);
+    },
+    [selectOrder, selectedOrderId],
+  );
 
   return (
     <div className="min-h-screen bg-zinc-50 pb-28">
@@ -177,7 +179,7 @@ export default function Dashboard({ orders }: DashboardProps) {
               {isInsightsOpen ? 'Hide Insights' : 'Show Insights'}
             </span>
             <span className="relative rounded-full bg-black/10 px-2 py-0.5 text-xs">
-              {insightsLoading ? '...' : urgentInsightCount || insights.length}
+              {insightsLoading ? '...' : insights.length}
             </span>
           </button>
         </div>
@@ -192,15 +194,17 @@ export default function Dashboard({ orders }: DashboardProps) {
 
           <FilterBar filters={filters} suppliers={suppliers} onChange={setFilters} />
 
-          <InsightPopups
+          <InsightsPanel
             isOpen={isInsightsOpen}
             insights={insights}
             loading={insightsLoading}
-            onDismissInsight={handleDismissInsight}
             onSelectInsight={handleSelectInsight}
           />
 
           <OrdersTable
+            insights={insights}
+            insightsLoading={insightsLoading}
+            onSelectOrder={handleSelectOrder}
             orders={visibleOrders}
             selectedOrderId={visibleSelectedOrderId}
             highlightedOrderId={visibleHighlightedOrderId}

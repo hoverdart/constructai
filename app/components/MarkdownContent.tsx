@@ -1,6 +1,7 @@
 'use client';
 
 import ReactMarkdown from 'react-markdown';
+import { defaultUrlTransform } from 'react-markdown';
 import type { Components } from 'react-markdown';
 
 interface MarkdownContentProps {
@@ -70,5 +71,14 @@ export default function MarkdownContent({ content, onHighlight }: MarkdownConten
     },
   };
 
-  return <ReactMarkdown components={components}>{content}</ReactMarkdown>;
+  return (
+    <ReactMarkdown components={components} urlTransform={urlTransform}>
+      {content}
+    </ReactMarkdown>
+  );
+}
+
+function urlTransform(url: string): string {
+  if (url.startsWith('highlight:')) return url;
+  return defaultUrlTransform(url);
 }
