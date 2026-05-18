@@ -147,6 +147,17 @@ export default function Dashboard({ orders }: DashboardProps) {
     },
     [selectOrder, selectedOrderId],
   );
+  const rowInsightCount = useMemo(
+    () =>
+      visibleOrders.reduce(
+        (count, order) =>
+          count +
+          insights.filter((insight) => insight.targetOrderIds.includes(order.uiId))
+            .length,
+        0,
+      ),
+    [insights, visibleOrders],
+  );
 
   return (
     <div className="min-h-screen bg-zinc-50 pb-28">
@@ -179,7 +190,7 @@ export default function Dashboard({ orders }: DashboardProps) {
               {isInsightsOpen ? 'Hide Insights' : 'Show Insights'}
             </span>
             <span className="relative rounded-full bg-black/10 px-2 py-0.5 text-xs">
-              {insightsLoading ? '...' : insights.length}
+              {insightsLoading ? '...' : rowInsightCount}
             </span>
           </button>
         </div>
@@ -195,6 +206,7 @@ export default function Dashboard({ orders }: DashboardProps) {
           <FilterBar filters={filters} suppliers={suppliers} onChange={setFilters} />
 
           <InsightsPanel
+            displayCount={rowInsightCount}
             isOpen={isInsightsOpen}
             insights={insights}
             loading={insightsLoading}

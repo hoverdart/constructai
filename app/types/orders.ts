@@ -21,6 +21,7 @@ export interface FilterState {
 }
 
 export type InsightSeverity = 'info' | 'warning' | 'critical';
+export type InsightType = 'actionable' | 'at_risk';
 
 export interface OrderInsight {
   id: string;
@@ -28,6 +29,7 @@ export interface OrderInsight {
   summary: string;
   action: string;
   severity: InsightSeverity;
+  type: InsightType;
   targetOrderIds: string[];
   supplier?: string | null;
   dueDate?: string | null;

@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     },
     body: JSON.stringify({
       model: process.env.OPENAI_INSIGHTS_MODEL ?? DEFAULT_MODEL,
-      instructions: `You scan a construction supply order table and produce proactive, actionable dashboard pop-up insights.
+      instructions: `You scan a construction supply order table and produce proactive, actionable dashboard insights.
 Today's date is ${today}.
 
 Prioritize:
@@ -52,12 +52,16 @@ Prioritize:
 - Delayed orders with near-term due dates.
 - Large quantities that may create site, storage, or crew coordination risk.
 - The next delivery that needs crew, unloading, or laydown preparation.
+- Orders that are not delayed yet but might become delayed or create field issues.
 
 Rules:
 - Return only insights that are useful without the user asking.
 - Keep summaries specific and grounded in the supplied orders.
 - Return all useful insights, up to ${MAX_INSIGHTS}.
 - Include a concrete next action for each insight.
+- Use type "actionable" for issues that already require follow-up, such as delayed, overdue, or pending orders near their due date.
+- Use type "at_risk" for orders that are not broken yet but might become delayed or might create handling, storage, coordination, confirmation, or crew-readiness issues.
+- Do not use type "at_risk" for orders already marked "Delayed"; those are actionable.
 - Every order-specific insight must include targetOrderIds using only the supplied order uiId values.
 - If an insight is general and cannot map to a row, return an empty targetOrderIds array.`,
       input: [
@@ -93,6 +97,7 @@ Rules:
                     'summary',
                     'action',
                     'severity',
+                    'type',
                     'targetOrderIds',
                     'supplier',
                     'dueDate',
@@ -108,6 +113,12 @@ Rules:
                     severity: {
                       type: 'string',
                       enum: ['info', 'warning', 'critical'],
+                    },
+                    type: {
+                      type: 'string',
+                      enum: ['actionable', 'at_risk'],
+                      description:
+                        'Use at_risk for orders that might become delayed or might have issues; use actionable for current issues.',
                     },
                     targetOrderIds: {
                       type: 'array',
@@ -199,6 +210,7 @@ function isOrderInsight(value: unknown): value is OrderInsight {
     typeof insight.summary === 'string' &&
     typeof insight.action === 'string' &&
     Array.isArray(insight.targetOrderIds) &&
+    (insight.type === 'actionable' || insight.type === 'at_risk') &&
     (insight.severity === 'info' ||
       insight.severity === 'warning' ||
       insight.severity === 'critical')

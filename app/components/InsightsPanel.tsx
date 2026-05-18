@@ -1,8 +1,9 @@
 'use client';
 
-import type { InsightSeverity, OrderInsight } from '@/app/types/orders';
+import type { InsightSeverity, InsightType, OrderInsight } from '@/app/types/orders';
 
 interface InsightsPanelProps {
+  displayCount: number;
   insights: OrderInsight[];
   isOpen: boolean;
   loading: boolean;
@@ -21,7 +22,23 @@ const severityDots: Record<InsightSeverity, string> = {
   critical: 'bg-red-500',
 };
 
+const typeStyles: Record<InsightType, string> = {
+  actionable: '',
+  at_risk: 'border-violet-200 bg-violet-50 text-violet-950',
+};
+
+const typeDots: Record<InsightType, string> = {
+  actionable: '',
+  at_risk: 'bg-violet-500',
+};
+
+const typeLabels: Record<InsightType, string> = {
+  actionable: 'Actionable',
+  at_risk: 'At risk',
+};
+
 export default function InsightsPanel({
+  displayCount,
   insights,
   isOpen,
   loading,
@@ -42,7 +59,7 @@ export default function InsightsPanel({
             </p>
           </div>
           <span className="rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-600">
-            {loading ? 'Scanning' : `${insights.length} active`}
+            {loading ? 'Scanning' : `${displayCount} row insights`}
           </span>
         </div>
 
@@ -83,6 +100,14 @@ export function InsightCard({
 }) {
   const hasTarget = insight.targetOrderIds.length > 0;
   const clickable = hasTarget && Boolean(onSelect);
+  const cardStyle =
+    insight.type === 'at_risk'
+      ? typeStyles.at_risk
+      : severityStyles[insight.severity];
+  const dotStyle =
+    insight.type === 'at_risk'
+      ? typeDots.at_risk
+      : severityDots[insight.severity];
 
   return (
     <div
@@ -103,13 +128,23 @@ export function InsightCard({
         clickable
           ? 'cursor-pointer hover:-translate-y-0.5 hover:shadow-md'
           : 'cursor-default'
-      } ${severityStyles[insight.severity]}`}
+      } ${cardStyle}`}
     >
       <div className="flex items-start gap-3">
         <span
-          className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${severityDots[insight.severity]}`}
+          className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${dotStyle}`}
         />
         <div className="min-w-0 flex-1">
+          <div className="mb-2 flex flex-wrap items-center gap-2">
+            <span className="rounded-full bg-white/70 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ring-1 ring-current/10">
+              {typeLabels[insight.type]}
+            </span>
+            {insight.type === 'at_risk' ? (
+              <span className="rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-medium text-violet-700 ring-1 ring-violet-200">
+                Might slip
+              </span>
+            ) : null}
+          </div>
           <p className="text-sm font-semibold">{insight.title}</p>
           <p className="mt-1 text-xs leading-relaxed opacity-80">
             {insight.summary}
