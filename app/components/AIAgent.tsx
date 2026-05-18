@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import type { Order } from '@/app/types/orders';
 import { formatOrdersForAI } from '@/app/lib/orders';
+import { IoSparklesOutline } from "react-icons/io5";
 
 interface Message {
   role: 'user' | 'assistant';
@@ -25,6 +27,7 @@ export default function AIAgent({ orders }: AIAgentProps) {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const streamedTextRef = useRef('');
 
   // Scroll to bottom whenever messages update
   useEffect(() => {
@@ -55,7 +58,7 @@ export default function AIAgent({ orders }: AIAgentProps) {
       // Stream the response text
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
-      let assistantText = '';
+      streamedTextRef.current = '';
 
       setMessages((prev) => [...prev, { role: 'assistant', content: '' }]);
 
@@ -72,10 +75,13 @@ export default function AIAgent({ orders }: AIAgentProps) {
             try {
               const { text } = JSON.parse(payload);
               if (text) {
-                assistantText += text;
+                streamedTextRef.current += text;
                 setMessages((prev) => {
                   const copy = [...prev];
-                  copy[copy.length - 1] = { role: 'assistant', content: assistantText };
+                  copy[copy.length - 1] = {
+                    role: 'assistant',
+                    content: streamedTextRef.current,
+                  };
                   return copy;
                 });
               }
@@ -85,7 +91,7 @@ export default function AIAgent({ orders }: AIAgentProps) {
           }
         }
       }
-    } catch (err) {
+    } catch {
       setMessages((prev) => [
         ...prev,
         { role: 'assistant', content: 'Sorry, something went wrong. Please try again.' },
@@ -106,10 +112,8 @@ export default function AIAgent({ orders }: AIAgentProps) {
     <div className="flex h-full flex-col rounded-xl border border-zinc-200 bg-white shadow-sm overflow-hidden">
       {/* Header */}
       <div className="flex items-center gap-2 border-b border-zinc-100 px-4 py-3">
-        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600">
-          <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-          </svg>
+        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-white">
+          <IoSparklesOutline />
         </div>
         <div>
           <p className="text-sm font-semibold text-zinc-800">AI Assistant</p>
@@ -138,13 +142,62 @@ export default function AIAgent({ orders }: AIAgentProps) {
           messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div
-                className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-relaxed whitespace-pre-wrap ${
+                className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm leading-relaxed ${
                   msg.role === 'user'
-                    ? 'bg-blue-600 text-white rounded-br-sm'
+                    ? 'bg-blue-600 text-white rounded-br-sm whitespace-pre-wrap'
                     : 'bg-zinc-100 text-zinc-800 rounded-bl-sm'
                 }`}
               >
-                {msg.content || (
+                {msg.role === 'user' ? (
+                  msg.content
+                ) : msg.content ? (
+                  <ReactMarkdown
+                    components={{
+                      // Headings
+                      h1: ({ children }) => <p className="font-semibold text-base mb-1">{children}</p>,
+                      h2: ({ children }) => <p className="font-semibold mb-1">{children}</p>,
+                      h3: ({ children }) => <p className="font-medium mb-0.5">{children}</p>,
+                      // Paragraphs
+                      p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                      // Bold / italic
+                      strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                      em: ({ children }) => <em className="italic">{children}</em>,
+                      // Lists
+                      ul: ({ children }) => <ul className="mb-2 ml-4 list-disc space-y-0.5 last:mb-0">{children}</ul>,
+                      ol: ({ children }) => <ol className="mb-2 ml-4 list-decimal space-y-0.5 last:mb-0">{children}</ol>,
+                      li: ({ children }) => <li>{children}</li>,
+                      // Code
+                      code: ({ children }) => (
+                        <code className="rounded bg-zinc-200 px-1 py-0.5 font-mono text-xs text-zinc-700">{children}</code>
+                      ),
+                      pre: ({ children }) => (
+                        <pre className="mb-2 overflow-x-auto rounded-lg bg-zinc-200 p-2 font-mono text-xs text-zinc-700 last:mb-0">{children}</pre>
+                      ),
+                      // Tables
+                      table: ({ children }) => (
+                        <div className="mb-2 overflow-x-auto last:mb-0">
+                          <table className="min-w-full border-collapse text-xs">{children}</table>
+                        </div>
+                      ),
+                      thead: ({ children }) => <thead className="border-b border-zinc-300">{children}</thead>,
+                      tbody: ({ children }) => <tbody className="divide-y divide-zinc-200">{children}</tbody>,
+                      th: ({ children }) => (
+                        <th className="py-1 pr-3 text-left font-semibold text-zinc-600 first:pl-0">{children}</th>
+                      ),
+                      td: ({ children }) => (
+                        <td className="py-1 pr-3 text-zinc-700 first:pl-0">{children}</td>
+                      ),
+                      // Horizontal rule
+                      hr: () => <hr className="my-2 border-zinc-300" />,
+                      // Blockquote
+                      blockquote: ({ children }) => (
+                        <blockquote className="mb-2 border-l-2 border-zinc-400 pl-3 text-zinc-600 italic last:mb-0">{children}</blockquote>
+                      ),
+                    }}
+                  >
+                    {msg.content}
+                  </ReactMarkdown>
+                ) : (
                   <span className="inline-flex gap-1">
                     <span className="animate-bounce" style={{ animationDelay: '0ms' }}>·</span>
                     <span className="animate-bounce" style={{ animationDelay: '150ms' }}>·</span>

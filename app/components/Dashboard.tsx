@@ -7,6 +7,7 @@ import FilterBar from './FilterBar';
 import OrdersTable from './OrdersTable';
 import StatCard from './StatCard';
 import AIAgent from './AIAgent';
+import InsightPopups from './InsightPopups';
 
 const DEFAULT_FILTERS: FilterState = {
   status: 'All',
@@ -80,6 +81,7 @@ export default function Dashboard({ orders }: DashboardProps) {
           </div>
         </div>
       </div>
+      <InsightPopups orders={filtered} />
     </div>
   );
 }
